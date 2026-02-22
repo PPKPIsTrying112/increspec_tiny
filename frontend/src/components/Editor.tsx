@@ -1,20 +1,23 @@
-import Editor from '@monaco-editor/react'
+import MonacoEditor from '@monaco-editor/react'
 
-export default function EditorPanel() {
+interface EditorProps {
+  code: string
+  onChange: (code: string) => void
+  output: string
+}
+
+export default function Editor({ code, onChange, output }: EditorProps) {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      
-      {/* FILE TAB */}
       <div className="border-b border-[#2a2a35] bg-[#16161a] px-4 py-2 text-sm text-[#8888a0] font-mono flex-shrink-0">
         calculator.py
       </div>
-
-      {/* EDITOR */}
       <div className="flex-1">
-        <Editor
+        <MonacoEditor
           height="100%"
           defaultLanguage="python"
-          defaultValue="# Start coding here"
+          value={code}
+          onChange={v => onChange(v || '')}
           theme="vs-dark"
           options={{
             fontSize: 13,
@@ -25,17 +28,14 @@ export default function EditorPanel() {
           }}
         />
       </div>
-
-      {/* OUTPUT PANEL */}
       <div className="h-36 border-t border-[#2a2a35] bg-[#16161a] flex flex-col flex-shrink-0">
-        <div className="px-4 py-1.5 border-b border-[#2a2a35] flex items-center gap-3">
+        <div className="px-4 py-1.5 border-b border-[#2a2a35]">
           <span className="text-[10px] font-bold tracking-widest text-[#555568] uppercase">Output</span>
         </div>
         <pre className="flex-1 overflow-auto p-4 font-mono text-xs text-[#8888a0] leading-relaxed">
-          // Hit Run to execute your code
+          {output || '// Hit Run to execute your code'}
         </pre>
       </div>
-
     </div>
   )
 }

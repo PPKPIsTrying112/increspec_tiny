@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import axios from 'axios'
 import Sidebar from './components/Sidebar'
 import ChatPanel from './components/ChatPanel'
 import Editor from './components/Editor'
@@ -7,11 +8,17 @@ type Panel = 'chat' | 'notes' | 'requirements'
 
 export default function App() {
   const [activePanel, setActivePanel] = useState<Panel>('chat')
+  const [code, setCode] = useState('# Start coding here')
+  const [output, setOutput] = useState('')
+
+  const handleRun = async () => {
+    const res = await axios.post('http://localhost:8000/execute', { code })
+    const { stdout, stderr } = res.data
+    setOutput(stdout || stderr)
+  }
 
   return (
     <div className="flex flex-col h-screen bg-[#0e0e10]">
-      
-      {/* TOP BAR */}
       <div className="h-11 bg-[#16161a] border-b border-[#2a2a35] flex items-center px-4 gap-3 flex-shrink-0">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-[#7c6aff] shadow-[0_0_8px_#7c6aff]" />
@@ -22,18 +29,19 @@ export default function App() {
           <span className="text-xs font-mono text-[#8888a0]">calculator.py</span>
         </div>
         <div className="flex-1" />
-        <button className="bg-[#7c6aff] hover:bg-[#9080ff] text-white text-xs font-bold px-4 py-1.5 rounded-md transition-colors">
+        <button
+          onClick={handleRun}
+          className="bg-[#7c6aff] hover:bg-[#9080ff] text-white text-xs font-bold px-4 py-1.5 rounded-md transition-colors"
+        >
           ▶ Run
         </button>
       </div>
 
-      {/* MAIN */}
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activePanel={activePanel} onPanelChange={setActivePanel} />
         <ChatPanel activePanel={activePanel} />
-        <Editor />
+        <Editor code={code} onChange={setCode} output={output} />
       </div>
-
     </div>
   )
 }
