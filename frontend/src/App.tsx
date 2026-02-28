@@ -39,7 +39,7 @@ export default function App() {
 
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activePanel={activePanel} onPanelChange={setActivePanel} />
-        <ChatPanel activePanel={activePanel} />
+        <ChatPanel activePanel={activePanel} code={code} />
         <Editor code={code} onChange={setCode} output={output} />
       </div>
     </div>

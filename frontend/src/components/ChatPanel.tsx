@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import axios from 'axios'
 
 type Panel = 'chat' | 'notes' | 'requirements'
 
@@ -9,18 +10,33 @@ interface Message {
 
 interface ChatPanelProps {
   activePanel: Panel
+  code: string
 }
 
-export default function ChatPanel({ activePanel }: ChatPanelProps) {
+export default function ChatPanel({ activePanel, code }: ChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: 'Hey! Upload your assignment and we can get started.' }
+    { role: 'assistant', content: 'Hey! Write some code and I can help guide you through it.' }
   ])
   const [input, setInput] = useState('')
+  const [isThinking, setIsThinking] = useState(false)
 
-  const sendMessage = () => {
-    if (!input.trim()) return
-    setMessages(prev => [...prev, { role: 'user', content: input }])
+  const sendMessage = async () => {
+    if (!input.trim() || isThinking) return
+
+    const userMsg: Message = { role: 'user', content: input }
+    const newMessages = [...messages, userMsg]
+    setMessages(newMessages)
     setInput('')
+    setIsThinking(true)
+
+    const res = await axios.post('http://localhost:8000/chat', {
+      messages: newMessages,
+      mode: 'walkthrough',
+      code
+    })
+
+    setMessages(prev => [...prev, { role: 'assistant', content: res.data.reply }])
+    setIsThinking(false)
   }
 
   return (
@@ -42,6 +58,14 @@ export default function ChatPanel({ activePanel }: ChatPanelProps) {
                 </div>
               </div>
             ))}
+            {isThinking && (
+              <div className="flex flex-col gap-1 items-start">
+                <span className="text-[10px] text-[#555568] uppercase tracking-widest">Mentor</span>
+                <div className="px-3 py-2 rounded-xl bg-[#1e1e24] border border-[#2a2a35] text-[#555568] text-sm">
+                  thinking...
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="p-3 border-t border-[#2a2a35] flex gap-2">
