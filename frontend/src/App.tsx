@@ -4,7 +4,8 @@ import Sidebar from './components/Sidebar'
 import ChatPanel from './components/ChatPanel'
 import Editor from './components/Editor'
 import FileTree from './components/FileTree'
-import { Panel } from './types/index'
+
+type Panel = 'chat' | 'notes' | 'requirements' | 'files'
 
 export default function App() {
   const [activePanel, setActivePanel] = useState<Panel>('chat')
@@ -16,6 +17,10 @@ export default function App() {
   })
   const [activeFile, setActiveFile] = useState('main.py')
 
+  const handleCodeChange = (newCode: string) => {
+    setCode(newCode)
+    setFiles(prev => ({ ...prev, [activeFile]: newCode }))
+  }
   const handleFileSelect = (filename: string) => {
     setActiveFile(filename)
     setCode(files[filename])
@@ -78,8 +83,8 @@ export default function App() {
           />
         )}
 
-        <Editor code={code} onChange={setCode} output={output} />
-      </div>
+        <Editor code={code} onChange={handleCodeChange} output={output} activeFile={activeFile} />      
+        </div>
     </div>
   )
 }

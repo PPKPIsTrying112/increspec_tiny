@@ -1,5 +1,6 @@
 import { MessageSquare, BookOpen, ClipboardList, FolderOpen } from 'lucide-react'
-import { Panel } from '../types/index'
+
+type Panel = 'chat' | 'notes' | 'requirements' | 'files'
 
 interface SidebarProps {
   activePanel: Panel

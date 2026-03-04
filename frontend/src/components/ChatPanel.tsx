@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import axios from 'axios'
-import { Panel, Message } from '../types/index'
+type Panel = 'chat' | 'notes' | 'requirements' | 'files'
 
 interface Message {
   role: 'user' | 'assistant'

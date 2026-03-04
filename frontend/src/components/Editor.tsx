@@ -4,13 +4,14 @@ interface EditorProps {
   code: string
   onChange: (code: string) => void
   output: string
+  activeFile: string
 }
 
-export default function Editor({ code, onChange, output }: EditorProps) {
+export default function Editor({ code, onChange, output, activeFile }: EditorProps) {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <div className="border-b border-[#2a2a35] bg-[#16161a] px-4 py-2 text-sm text-[#8888a0] font-mono flex-shrink-0">
-        calculator.py
+        {activeFile}
       </div>
       <div className="flex-1">
         <MonacoEditor
