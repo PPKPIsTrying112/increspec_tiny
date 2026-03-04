@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import subprocess
-import tempfile
+import httpx
 import os
 from dotenv import load_dotenv
 import anthropic
@@ -20,42 +19,56 @@ app.add_middleware(
 
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
+# Language map — file extension to Piston language and version
+LANGUAGE_MAP = {
+    '.py': ('python', '3.10.0'),
+    '.c': ('gcc', '10.2.0'),
+    '.cpp': ('gcc', '10.2.0'),
+    '.js': ('node', '18.15.0'),
+    '.java': ('java', '15.0.2'),
+}
 
 class CodeRequest(BaseModel):
     code: str
-
+    filename: str = 'main.py'
 
 class ChatRequest(BaseModel):
     messages: list
     mode: str
     code: str
-
+    model: str = 'claude-haiku-4-5-20251001'
 
 @app.post("/execute")
-def execute_code(req: CodeRequest):
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
-        f.write(req.code)
-        tmp_path = f.name
+async def execute_code(req: CodeRequest):
+    ext = '.' + req.filename.split('.')[-1]
+    language, version = LANGUAGE_MAP.get(ext, ('python', '3.10.0'))
 
-    result = subprocess.run(
-        ["python3", tmp_path],
-        capture_output=True,
-        text=True,
-        timeout=10
-    )
-    os.unlink(tmp_path)
+    async with httpx.AsyncClient() as client_http:
+        response = await client_http.post(
+            'http://localhost:2000/api/v2/execute',
+            json={
+                'language': language,
+                'version': version,
+                'files': [{ 
+                    'name': req.filename,
+                    'content': req.code 
+                }]
+            },
+            timeout=30
+        )
+        result = response.json()
 
+    print(result)  # debug — check terminal output
+    run = result.get('run', {})
     return {
-        "stdout": result.stdout,
-        "stderr": result.stderr,
-        "returncode": result.returncode
+        'stdout': run.get('stdout', ''),
+        'stderr': run.get('stderr', ''),
+        'returncode': run.get('code', 0)
     }
-
-
 @app.post("/chat")
-def chat(req: ChatRequest):
+async def chat(req: ChatRequest):
     response = client.messages.create(
-        model="claude-opus-4-6",
+        model=req.model,
         max_tokens=400,
         system=f"""You are a Socratic coding tutor. Never give the answer directly.
 Ask guiding questions. Keep replies short and focused.

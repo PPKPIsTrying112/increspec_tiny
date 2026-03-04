@@ -43,7 +43,11 @@ export default function App() {
   }
 
   const handleRun = async () => {
-    const res = await axios.post('http://localhost:8000/execute', { code })
+    const res = await axios.post('http://localhost:8000/execute', { 
+      code,
+      filename: activeFile
+    })
+    console.log(res.data)  // add this
     const { stdout, stderr } = res.data
     setOutput(stdout || stderr)
   }
