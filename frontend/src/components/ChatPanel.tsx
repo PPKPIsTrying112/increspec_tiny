@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import axios from 'axios'
+import ReactMarkdown from 'react-markdown'
+
 type Panel = 'chat' | 'notes' | 'requirements' | 'files'
 
 interface Message {
@@ -48,12 +50,13 @@ export default function ChatPanel({ activePanel, code }: ChatPanelProps) {
                 <span className="text-[10px] text-[#555568] uppercase tracking-widest">
                   {m.role === 'user' ? 'You' : 'Mentor'}
                 </span>
-                <div className={`px-3 py-2 rounded-xl text-sm leading-relaxed max-w-[85%] ${
+                <div className={`px-3 py-2 rounded-xl text-sm leading-relaxed max-w-[85%] overflow-x-auto ${
                   m.role === 'user'
                     ? 'bg-[#26262e] text-[#8888a0]'
                     : 'bg-[#1e1e24] border border-[#2a2a35] text-white'
                 }`}>
-                  {m.content}
+                  <ReactMarkdown>{m.content}</ReactMarkdown>
+                  
                 </div>
               </div>
             ))}

@@ -7,3 +7,19 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.prose pre {
+  background: #26262e;
+  padding: 8px 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 12px;
+}
+
+.prose code {
+  background: #26262e;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  color: #6affd4;
+}
