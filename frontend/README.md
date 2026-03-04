@@ -1,73 +1,63 @@
-# React + TypeScript + Vite
+# increspec
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An AI-powered IDE that teaches you to code, not just complete assignments.
 
-Currently, two official plugins are available:
+Built for CS students doing real coursework — OS assignments, data structures, algorithms — without copying code or fighting environment setup.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## The Problem
+Students paste assignments into ChatGPT and copy the output. They complete the assignment but learn nothing. Existing AI tools optimise for speed of output, not depth of understanding.
 
-## React Compiler
+## The Solution
+increspec is a Socratic AI tutor built into a browser-based IDE. It guides students through their assignments step by step with questions, not answers. Zero environment setup — runs C, Python, and more directly in the browser.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+**Frontend**
+- React + TypeScript
+- Vite
+- Tailwind CSS
+- Monaco Editor
+- Axios
+- Lucide React
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+**Backend**
+- FastAPI + Uvicorn
+- Anthropic Claude API
+- Piston API (sandboxed multi-language code execution)
+- python-dotenv
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Running Locally
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**Backend**
+```bash
+cd backend
+pip3 install -r requirements.txt
+echo "ANTHROPIC_API_KEY=your_key_here" > .env
+uvicorn app.main:app --reload --port 8000
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**Frontend**
+```bash
+cd frontend
+npm install
+npm run dev
 ```
+
+App runs at http://localhost:5174
+
+## Features
+- Monaco code editor with syntax highlighting
+- Sandboxed code execution via Piston API
+- AI tutor chat powered by Claude
+- Socratic mode — guides without giving answers
+- Code context sent to AI automatically
+- Model selector (Haiku / Sonnet / Opus)
+
+## Roadmap
+- [ ] Multi-file support with folder structure
+- [ ] C/C++ support for OS assignments
+- [ ] Markdown rendering in chat
+- [ ] Mode chips (Walk-thru / Explain concept)
+- [ ] Saved notes panel
+- [ ] Token usage display
+- [ ] Docker sandboxing for production
