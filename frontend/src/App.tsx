@@ -74,7 +74,7 @@ export default function App() {
         
         {activePanel === 'chat' && <ChatPanel activePanel={activePanel} code={code} />}
         {activePanel === 'notes' && <div className="w-72 bg-[#16161a] border-r border-[#2a2a35] p-4 text-white">Notes</div>}
-        {activePanel === 'requirements' && <div className="w-72 bg-[#16161a] border-r border-[#2a2a35] p-4 text-white">Requirements</div>}
+        {activePanel === 'requirements' && <ChatPanel activePanel={activePanel} code={code} />}
         {activePanel === 'files' && (
           <FileTree
             projectName={projectName}

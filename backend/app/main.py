@@ -5,6 +5,8 @@ import httpx
 import os
 from dotenv import load_dotenv
 import anthropic
+import base64
+
 
 load_dotenv()
 
@@ -78,3 +80,43 @@ Mode: {req.mode}""",
         messages=req.messages
     )
     return {"reply": response.content[0].text}
+
+
+class RequirementsRequest(BaseModel):
+    pdf_base64: str
+
+@app.post("/parse-requirements")
+async def parse_requirements(req: RequirementsRequest):
+    response = client.messages.create(
+        model="claude-sonnet-4-20250514",
+        max_tokens=2000,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "document",
+                        "source": {
+                            "type": "base64", 
+                            "media_type": "application/pdf",
+                            "data": req.pdf_base64
+                        }
+                    },
+                    {
+                        "type": "text",
+                        "text": """Extract all the tasks and requirements from this assignment PDF.
+Return them as clean markdown with this structure:
+
+## Task 1: [Task Title]
+[Brief description of what needs to be done]
+
+## Task 2: [Task Title]
+[Brief description]
+
+Only return the markdown. No preamble, no explanation."""
+                    }
+                ]
+            }
+        ]
+    )
+    return {"markdown": response.content[0].text}

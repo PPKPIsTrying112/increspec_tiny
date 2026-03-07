@@ -1,3 +1,5 @@
+import RequirementsPanel from './RequirementsPanel'
+
 import { useState } from 'react'
 import axios from 'axios'
 import ReactMarkdown from 'react-markdown'
@@ -93,7 +95,7 @@ export default function ChatPanel({ activePanel, code }: ChatPanelProps) {
         <div className="p-4 text-white">Notes panel</div>
       )}
       {activePanel === 'requirements' && (
-        <div className="p-4 text-white">Requirements panel</div>
+        <RequirementsPanel />
       )}
     </div>
   )
