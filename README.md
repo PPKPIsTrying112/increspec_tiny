@@ -7,8 +7,6 @@ To tell you the inspiration behind this project, it is a mixture of 2 major grip
 
 ## What It Does 
 
-*(Drop a screenshot or GIF of your increspec browser IDE interface here!)*
-
 increspec is a browser-based IDE where you upload your assignment, write your code, run it, and get guided through it by an AI that makes you think instead of just handing you the answer. No installs. No VMs. Open the browser, upload your assignment, and start working right away.
 
 ## Technical Highlights
